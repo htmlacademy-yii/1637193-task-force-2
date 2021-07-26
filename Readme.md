@@ -1,7 +1,7 @@
 # Личный проект «TaskForce»
 
 * Студент: [Александр Галкин](https://up.htmlacademy.ru/yii/2/user/1637193).
-* Наставник: `Неизвестно`.
+* Наставник: [Михаил Куклин](https://htmlacademy.ru/profile/id1053261).
 
 ---
 
