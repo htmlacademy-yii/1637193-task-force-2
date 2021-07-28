@@ -1,11 +1,48 @@
 <?php
-require_once 'TaskStatus.php';
-//use TaskStatus;
+require_once "vendor/autoload.php";
 
-$task_status = new TaskStatus(1, 2);
-assert($task_status->getNextStatus(TaskStatus::ACTION_ADD_NEW) === TaskStatus::STATUS_NEW, 'провал');
-assert($task_status->getNextStatus(TaskStatus::ACTION_CANCEL) === TaskStatus::STATUS_CANCELLED, 'провал');
-assert($task_status->getNextStatus(TaskStatus::ACTION_RESPOND) === TaskStatus::STATUS_IN_PROGRESS, 'провал');
-assert($task_status->getNextStatus(TaskStatus::ACTION_COMPLETE) === TaskStatus::STATUS_DONE, 'провал');
-assert($task_status->getNextStatus(TaskStatus::ACTION_REFUSE) === TaskStatus::STATUS_FAILED, 'провал');
-echo 'Тесты пройдены';
+require_once "src/Task/StatefulInterface.php";
+require_once "src/Task/StateMachine/StateMachine.php";
+require_once "src/Task/StateMachine/CustomerStateMachine.php";
+require_once "src/Task/StateMachine/ImplementorStateMachine.php";
+
+require_once "src/Task/Task.php";
+require_once "src/Task/ActionOption.php";
+require_once "src/Task/TaskStatus.php";
+require_once "src/Task/UserRole.php";
+
+use TaskForce\Task\ActionOption;
+use TaskForce\Task\Task;
+use TaskForce\Task\TaskStatus;
+
+$customer_id = 1;
+$implementor_id = 2;
+
+
+$newTask = new Task(TaskStatus::NEW(), $customer_id);
+assert($newTask->customerId == 1, 'хранит id заказчика');
+
+$inWorkTask = new Task(TaskStatus::IN_PROGRESS(), $customer_id, $implementor_id);
+assert($inWorkTask->implementorId == 2, 'хранит id исполнителя');
+
+$taskSM = $newTask->getStatefulTask($customer_id);
+assert($taskSM->can(ActionOption::CANCEL()) == true, 'проверяет доступное действие');
+assert($taskSM->can(ActionOption::REFUSE()) == false, 'проверяет недоступное действие');
+
+echo '<br>';
+var_dump($taskSM->getCurrentState()->label);
+echo '<br>';
+
+//todo вопрос. Явный косяк со значениями.
+// этот вариант проходит:
+//assert($taskSM->getCurrentState()->label == 'NEW', 'возвращает текущий статус');
+
+// эти не проходят, т.к. getCurrentState() выдает NEW вместо ожидаемого 'Новая задача'. Подробнее в файле TaskStatus.php
+assert($taskSM->getCurrentState()->label == 'Новая задача', 'возвращает текущий статус');
+assert($taskSM->getNextStatus(ActionOption::CANCEL())->label == 'Отменено', 'возвращает следующий статус');
+
+
+//тут все ок
+assert($taskSM->getAvailableActions()[0] == ActionOption::CANCEL(), 'возвращает доступные действия');
+
+echo 'Тесты пройдены' . "<br>";
