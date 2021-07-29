@@ -7,11 +7,11 @@ require_once "src/Task/StateMachine/CustomerStateMachine.php";
 require_once "src/Task/StateMachine/ImplementorStateMachine.php";
 
 require_once "src/Task/Task.php";
-require_once "src/Task/ActionOption.php";
+require_once "src/Task/TaskActionEnum.php";
 require_once "src/Task/TaskStatus.php";
 require_once "src/Task/UserRole.php";
 
-use TaskForce\Task\ActionOption;
+use TaskForce\Task\TaskActionEnum;
 use TaskForce\Task\Task;
 use TaskForce\Task\TaskStatus;
 
@@ -26,23 +26,10 @@ $inWorkTask = new Task(TaskStatus::IN_PROGRESS(), $customer_id, $implementor_id)
 assert($inWorkTask->implementorId == 2, 'хранит id исполнителя');
 
 $taskSM = $newTask->getStatefulTask($customer_id);
-assert($taskSM->can(ActionOption::CANCEL()) == true, 'проверяет доступное действие');
-assert($taskSM->can(ActionOption::REFUSE()) == false, 'проверяет недоступное действие');
-
-echo '<br>';
-var_dump($taskSM->getCurrentState()->label);
-echo '<br>';
-
-//todo вопрос. Явный косяк со значениями.
-// этот вариант проходит:
-//assert($taskSM->getCurrentState()->label == 'NEW', 'возвращает текущий статус');
-
-// эти не проходят, т.к. getCurrentState() выдает NEW вместо ожидаемого 'Новая задача'. Подробнее в файле TaskStatus.php
-assert($taskSM->getCurrentState()->label == 'Новая задача', 'возвращает текущий статус');
-assert($taskSM->getNextStatus(ActionOption::CANCEL())->label == 'Отменено', 'возвращает следующий статус');
-
-
-//тут все ок
-assert($taskSM->getAvailableActions()[0] == ActionOption::CANCEL(), 'возвращает доступные действия');
+assert($taskSM->can(TaskActionEnum::CANCEL()) == true, 'проверяет доступное действие');
+assert($taskSM->can(TaskActionEnum::REFUSE()) == false, 'проверяет недоступное действие');
+assert($taskSM->getCurrentStatus()->label == 'Новая задача', 'возвращает текущий статус');
+assert($taskSM->getNextStatus(TaskActionEnum::cancel())->label == 'Задача отменена', 'возвращает следующий статус');
+assert($taskSM->getAvailableActions()[0] == TaskActionEnum::cancel(), 'возвращает доступные действия');
 
 echo 'Тесты пройдены' . "<br>";

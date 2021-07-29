@@ -2,7 +2,7 @@
 
 namespace TaskForce\Task\StateMachine;
 
-use TaskForce\Task\ActionOption as ActionOption;
+use TaskForce\Task\TaskActionEnum as TaskActionEnum;
 use TaskForce\Task\StatefulInterface;
 use TaskForce\Task\TaskStatus as TaskStatus;
 
@@ -22,24 +22,24 @@ class StateMachine
 
     /**
      * Применяет новый статус для задачи, при его возможности
-     * @param ActionOption $action действие, приводящее к смене статуса
+     * @param TaskActionEnum $action действие, приводящее к смене статуса
      */
-    public function apply(ActionOption $action): void
+    public function apply(TaskActionEnum $action): void
     {
         if ($this->can($action)) {
-            $this->document->setFiniteState($this->getNextStatus($action));
+            $this->document->setStatus($this->getNextStatus($action));
         }
     }
 
     /**
      * Проверяет, может ли выполнить переход в новое состояние из указанного
-     * @param ActionOption $action действие, приводящее к смене статуса
+     * @param TaskActionEnum $action действие, приводящее к смене статуса
      * @return bool да\нет
      */
-    public function can(ActionOption $action): bool
+    public function can(TaskActionEnum $action): bool
     {
         if (isset($this->transitions[$action])) {
-            return $this->transitions[$action]['from']->equals($this->document->getFiniteState());
+            return $this->transitions[$action]['from']->equals($this->document->getStatus());
         }
         return false;
     }
@@ -48,18 +48,18 @@ class StateMachine
      * Возвращает текущий статус задачи
      * @return TaskStatus
      */
-    public function getCurrentState(): TaskStatus
+    public function getCurrentStatus(): TaskStatus
     {
-        return $this->document->getFiniteState();
+        return $this->document->getStatus();
     }
 
     /**
      * Получает статус задачи, в которой она перейдёт после выполнения указанного действия при наличии этого статуса,
      * либо null, если  нового состояния нет
-     * @param ActionOption $action действие, приводящее к смене статуса
+     * @param TaskActionEnum $action действие, приводящее к смене статуса
      * @return TaskStatus|null Новый статус / null
      */
-    public function getNextStatus(ActionOption $action): ?TaskStatus
+    public function getNextStatus(TaskActionEnum $action): ?TaskStatus
     {
         if ($this->can($action)) {
             return $this->transitions[$action]['to'];
@@ -74,11 +74,11 @@ class StateMachine
      */
     public function getAvailableActions(): array
     {
-        $currentState = $this->getCurrentState();
+        $currentStatus = $this->getCurrentStatus();
         $actions = [];
 
-        foreach ($this->transitions as $action => $states) {
-            if ($currentState->equals($states['from'])) {
+        foreach ($this->transitions as $action => $status) {
+            if ($currentStatus->equals($status['from'])) {
                 $actions[] = $action;
             }
         }

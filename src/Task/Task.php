@@ -28,18 +28,18 @@ class Task implements StatefulInterface
     /**
      * @return TaskStatus статус задачи объекта TaskStatus
      */
-    public function getFiniteState(): TaskStatus
+    public function getStatus(): TaskStatus
     {
         return $this->status;
     }
 
     /**
      * Задает статус задачи объекта TaskStatus.
-     * @param TaskStatus $state новый статус
+     * @param TaskStatus $status новый статус
      */
-    public function setFiniteState(TaskStatus $state): void
+    public function setStatus(TaskStatus $status): void
     {
-        $this->status = $state;
+        $this->status = $status;
     }
 
     /**
@@ -54,7 +54,7 @@ class Task implements StatefulInterface
             return \TaskForce\Task\UserRole::customer();
         }
 
-        if ($this->implementerId && $userId === $this->implementerId) {
+        if ($this->implementorId && $userId === $this->implementorId) {
             //return логика для исполнителя
             return \TaskForce\Task\UserRole::implementor();
         }

@@ -10,11 +10,11 @@ interface StatefulInterface
      * Возвращает статус задачи объекта TaskStatus.
      * @return TaskStatus
      */
-    public function getFiniteState(): TaskStatus;
+    public function getStatus(): TaskStatus;
 
     /**
      * Задает статус задачи объекта TaskStatus.
-     * @param TaskStatus $state новый статус
+     * @param TaskStatus $status новый статус
      */
-    public function setFiniteState(TaskStatus $state): void;
+    public function setStatus(TaskStatus $status): void;
 }

@@ -4,22 +4,14 @@ namespace TaskForce\Task;
 use Spatie\Enum\Enum;
 
 /**
- * @method static self NEW()
- * @method static self CANCELLED()
- * @method static self IN_PROGRESS()
- * @method static self DONE()
- * @method static self FAILED()
+ * @method static self new()
+ * @method static self cancelled()
+ * @method static self in_progress()
+ * @method static self done()
+ * @method static self failed()
  */
 class TaskStatus extends \Spatie\Enum\Enum
 {
-    // Константы с описанием статусов задач
-    const NEW = 'new_task';
-    const CANCELLED = 'task_is_cancelled';
-    const IN_PROGRESS = 'task_in_progress';
-    const DONE = 'task_is_done';
-    const FAILED = 'task_is_failed';
-
-
     /**
      * Возвращает «карты» статусов.
      * @return array Карта — это ассоциативный массив, где ключ — внутреннее имя, а значение — названия статуса на русском.
@@ -27,11 +19,11 @@ class TaskStatus extends \Spatie\Enum\Enum
     protected static function labels(): array
     {
         return [
-            self::NEW => 'Новая задача',
-            self::CANCELLED => 'Задача отменена',
-            self::IN_PROGRESS => 'Задача в работе',
-            self::DONE => 'Задача завершена',
-            self::FAILED => 'Задача провалена',
+            'new' => 'Новая задача',
+            'cancelled' => 'Задача отменена',
+            'in_progress' => 'Задача в работе',
+            'done' => 'Задача завершена',
+            'failed' => 'Задача провалена',
         ];
     }
 }
