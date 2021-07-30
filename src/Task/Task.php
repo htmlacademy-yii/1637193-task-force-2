@@ -2,23 +2,23 @@
 
 namespace TaskForce\Task;
 
-use TaskForce\Task\StatefulInterface;
+use TaskForce\Task\StatusInterface;
 use TaskForce\Task\StateMachine\StateMachine;
 use TaskForce\Task\StateMachine\CustomerStateMachine;
 use TaskForce\Task\StateMachine\ImplementorStateMachine;
-use TaskForce\Task\UserRole;
+use TaskForce\Task\UserRoleEnum;
 
-class Task implements StatefulInterface
+class Task implements StatusInterface
 {
 
     /**
      * Task constructor.
-     * @param TaskStatus $status статус задачи
+     * @param TaskStatusEnum $status статус задачи
      * @param int $customerId id клиента, поставившего задачу
      * @param int|null $implementorId id исполнителя задачи (при его наличии) либо null
      */
     public function __construct(
-        protected TaskStatus $status,
+        protected TaskStatusEnum $status,
         public int $customerId,
         public ?int $implementorId = null
     )
@@ -26,18 +26,18 @@ class Task implements StatefulInterface
     }
 
     /**
-     * @return TaskStatus статус задачи объекта TaskStatus
+     * @return TaskStatusEnum статус задачи объекта TaskStatusEnum
      */
-    public function getStatus(): TaskStatus
+    public function getStatus(): TaskStatusEnum
     {
         return $this->status;
     }
 
     /**
-     * Задает статус задачи объекта TaskStatus.
-     * @param TaskStatus $status новый статус
+     * Задает статус задачи объекта TaskStatusEnum.
+     * @param TaskStatusEnum $status новый статус
      */
-    public function setStatus(TaskStatus $status): void
+    public function setStatus(TaskStatusEnum $status): void
     {
         $this->status = $status;
     }
@@ -51,12 +51,12 @@ class Task implements StatefulInterface
     {
         if ($userId === $this->customerId) {
             //return логика для заказчика
-            return \TaskForce\Task\UserRole::customer();
+            return \TaskForce\Task\UserRoleEnum::customer();
         }
 
         if ($this->implementorId && $userId === $this->implementorId) {
             //return логика для исполнителя
-            return \TaskForce\Task\UserRole::implementor();
+            return \TaskForce\Task\UserRoleEnum::implementor();
         }
 
         return null;
@@ -72,11 +72,11 @@ class Task implements StatefulInterface
     {
         $role = $this->getRoleById($userId);
 
-        if ($role !== null && $role->equals(UserRole::customer())) {
+        if ($role?->equals(UserRoleEnum::customer())) {
             return new CustomerStateMachine($this);
         }
 
-        if ($role !== null && $role->equals(UserRole::implementor())) {
+        if ($role?->equals(UserRoleEnum::implementor())) {
             return new ImplementorStateMachine($this);
         }
 

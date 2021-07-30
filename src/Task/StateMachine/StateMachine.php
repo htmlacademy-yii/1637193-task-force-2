@@ -2,19 +2,19 @@
 
 namespace TaskForce\Task\StateMachine;
 
-use TaskForce\Task\TaskActionEnum as TaskActionEnum;
-use TaskForce\Task\StatefulInterface;
-use TaskForce\Task\TaskStatus as TaskStatus;
+use TaskForce\Task\TaskActionEnum;
+use TaskForce\Task\StatusInterface;
+use TaskForce\Task\TaskStatusEnum;
 
 class StateMachine
 {
     /**
      * StateMachine constructor.
-     * @param StatefulInterface $document
+     * @param StatusInterface $document
      * @param \WeakMap $transitions
      */
     public function __construct(
-        public StatefulInterface $document,
+        public StatusInterface $document,
         public \WeakMap $transitions
     )
     {
@@ -46,9 +46,9 @@ class StateMachine
 
     /**
      * Возвращает текущий статус задачи
-     * @return TaskStatus
+     * @return TaskStatusEnum
      */
-    public function getCurrentStatus(): TaskStatus
+    public function getCurrentStatus(): TaskStatusEnum
     {
         return $this->document->getStatus();
     }
@@ -57,9 +57,9 @@ class StateMachine
      * Получает статус задачи, в которой она перейдёт после выполнения указанного действия при наличии этого статуса,
      * либо null, если  нового состояния нет
      * @param TaskActionEnum $action действие, приводящее к смене статуса
-     * @return TaskStatus|null Новый статус / null
+     * @return TaskStatusEnum|null Новый статус / null
      */
-    public function getNextStatus(TaskActionEnum $action): ?TaskStatus
+    public function getNextStatus(TaskActionEnum $action): ?TaskStatusEnum
     {
         if ($this->can($action)) {
             return $this->transitions[$action]['to'];

@@ -10,7 +10,7 @@ use Spatie\Enum\Enum;
  * @method static self done()
  * @method static self failed()
  */
-class TaskStatus extends \Spatie\Enum\Enum
+class TaskStatusEnum extends \Spatie\Enum\Enum
 {
     /**
      * Возвращает «карты» статусов.
