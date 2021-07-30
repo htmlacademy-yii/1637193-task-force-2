@@ -1,0 +1,23 @@
+{
+    "name": "alexander_galkin/yii_task-force",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexander Galkin",
+            "email": "xgalkin@gmail.com"
+        }
+    ],
+    "require": {
+        "spatie/enum": "^3.9"
+    }
+  ,
+  "require-dev": {
+    "roave/security-advisories": "dev-latest"
+  },
+  "autoload": {
+    "psr-4": {
+      "TaskForce\\": "src/"
+    }
+  }
+}
