@@ -20,8 +20,7 @@ USE `taskforce` ;
 CREATE TABLE IF NOT EXISTS `taskforce`.`cities` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `city` TEXT(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
@@ -33,8 +32,7 @@ CREATE TABLE IF NOT EXISTS `taskforce`.`locations` (
   `city_id` INT NOT NULL,
   `coordinates` POINT NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `city_id_idx` (`city_id` ASC) VISIBLE,
+--  INDEX `city_id_idx` (`city_id` ASC) VISIBLE,
   CONSTRAINT `city_id`
     FOREIGN KEY (`city_id`)
     REFERENCES `taskforce`.`cities` (`id`)
@@ -72,8 +70,7 @@ CREATE TABLE IF NOT EXISTS `taskforce`.`users` (
   `failed_tasks` INT NULL,
   `role` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `city_id_idx` (`location_id` ASC) VISIBLE,
+--  INDEX `city_id_idx` (`location_id` ASC) VISIBLE,
   CONSTRAINT `location_id`
     FOREIGN KEY (`location_id`)
     REFERENCES `taskforce`.`locations` (`id`)
@@ -88,8 +85,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `taskforce`.`categories` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `major` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
@@ -101,9 +97,8 @@ CREATE TABLE IF NOT EXISTS `taskforce`.`implementor_major` (
   `major_id` INT NULL,
   `user_id` INT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `specialization_id_idx` (`major_id` ASC) VISIBLE,
-  INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
+--  INDEX `specialization_id_idx` (`major_id` ASC) VISIBLE,
+--  INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `specialization_id`
     FOREIGN KEY (`major_id`)
     REFERENCES `taskforce`.`categories` (`id`)
@@ -123,8 +118,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `taskforce`.`task_files_all` (
   `id` INT NOT NULL,
   `file_url` TEXT(200) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
@@ -136,9 +130,8 @@ CREATE TABLE IF NOT EXISTS `taskforce`.`task_files` (
   `file_id` INT NULL,
   `task_id` INT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `file_id_idx` (`file_id` ASC) VISIBLE,
-  INDEX `task_id_idx` (`task_id` ASC) VISIBLE,
+--  INDEX `file_id_idx` (`file_id` ASC) VISIBLE,
+--  INDEX `task_id_idx` (`task_id` ASC) VISIBLE,
   CONSTRAINT `task_file_id`
     FOREIGN KEY (`file_id`)
     REFERENCES `taskforce`.`task_files_all` (`id`)
@@ -169,12 +162,11 @@ CREATE TABLE IF NOT EXISTS `taskforce`.`tasks` (
   `budget` INT NULL,
   `completed_ad` DATETIME NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `category_id_idx` (`category_id` ASC) VISIBLE,
-  INDEX `customer_id_idx` (`customer_id` ASC) VISIBLE,
-  INDEX `implementor_id_idx` (`implementor_id` ASC) VISIBLE,
-  INDEX `files_id_idx` (`files_id` ASC) VISIBLE,
-  INDEX `location_id_idx` (`location_id` ASC) VISIBLE,
+--  INDEX `category_id_idx` (`category_id` ASC) VISIBLE,
+--  INDEX `customer_id_idx` (`customer_id` ASC) VISIBLE,
+--  INDEX `implementor_id_idx` (`implementor_id` ASC) VISIBLE,
+--  INDEX `files_id_idx` (`files_id` ASC) VISIBLE,
+--  INDEX `location_id_idx` (`location_id` ASC) VISIBLE,
   CONSTRAINT `category_id`
     FOREIGN KEY (`category_id`)
     REFERENCES `taskforce`.`categories` (`id`)
@@ -213,8 +205,7 @@ CREATE TABLE IF NOT EXISTS `taskforce`.`feedback_list` (
   `score` FLOAT NULL,
   `task_id` INT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `task_id_idx` (`task_id` ASC) INVISIBLE,
+--  INDEX `task_id_idx` (`task_id` ASC) INVISIBLE,
   CONSTRAINT `task_feedback_id`
     FOREIGN KEY (`task_id`)
     REFERENCES `taskforce`.`tasks` (`id`)
@@ -231,9 +222,8 @@ CREATE TABLE IF NOT EXISTS `taskforce`.`user_feedback` (
   `user_id` INT NULL,
   `feedback_id` INT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
-  INDEX `feedback_id_idx` (`feedback_id` ASC) VISIBLE,
+--  INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
+--  INDEX `feedback_id_idx` (`feedback_id` ASC) VISIBLE,
   CONSTRAINT `user_feedback_id`
     FOREIGN KEY (`user_id`)
     REFERENCES `taskforce`.`users` (`id`)
@@ -253,8 +243,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `taskforce`.`portfolio_files` (
   `id` INT NOT NULL,
   `file_url` TEXT(200) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
@@ -266,9 +255,8 @@ CREATE TABLE IF NOT EXISTS `taskforce`.`portfolio` (
   `file_id` INT NULL,
   `user_id` INT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `file_id_idx` (`file_id` ASC) VISIBLE,
-  INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
+--  INDEX `file_id_idx` (`file_id` ASC) VISIBLE,
+--  INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `file_portpolio_id`
     FOREIGN KEY (`file_id`)
     REFERENCES `taskforce`.`portfolio_files` (`id`)
@@ -293,9 +281,8 @@ CREATE TABLE IF NOT EXISTS `taskforce`.`responses` (
   `cost` INT NULL,
   `description` VARCHAR(200) NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `implementor_id_idx` (`implementor_id` ASC) VISIBLE,
-  INDEX `task_id_idx` (`task_id` ASC) VISIBLE,
+--  INDEX `implementor_id_idx` (`implementor_id` ASC) VISIBLE,
+--  INDEX `task_id_idx` (`task_id` ASC) VISIBLE,
   CONSTRAINT `implementor_responce_id`
     FOREIGN KEY (`implementor_id`)
     REFERENCES `taskforce`.`users` (`id`)
@@ -321,10 +308,9 @@ CREATE TABLE IF NOT EXISTS `taskforce`.`messages` (
   `task_id` INT NOT NULL,
   `is_read` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `sender_id_idx` (`sender_id` ASC) VISIBLE,
-  INDEX `recipient_id_idx` (`recipient_id` ASC) VISIBLE,
-  INDEX `message_task_id_idx` (`task_id` ASC) VISIBLE,
+--  INDEX `sender_id_idx` (`sender_id` ASC) VISIBLE,
+--  INDEX `recipient_id_idx` (`recipient_id` ASC) VISIBLE,
+--  INDEX `message_task_id_idx` (`task_id` ASC) VISIBLE,
   CONSTRAINT `sender_id`
     FOREIGN KEY (`sender_id`)
     REFERENCES `taskforce`.`users` (`id`)
