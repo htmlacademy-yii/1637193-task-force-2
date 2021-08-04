@@ -1,26 +1,6 @@
 **Текстовое описание classmap (черновик**).
 
-###### Список классов:
-
-- Регистрация нового аккаунта https://drive.google.com/file/d/1IprUomPzm1oGLOSzfUk1wypAE-cNO9uC/view?usp=sharing
-
-- Публикация нового задания
-
-- Аутентификация на сайте (частично yii)
-
-- Добавление отклика
-
-- Завершение задания
-
-- Отказ от задания
-
-- Отмена задания
-
-- Старт задания
-
-- Переход по статусам заданий (src\task)
-
-
+Cхема classmap из https://app.diagrams.net: https://drive.google.com/file/d/1249kIHRxAOtsfaa_HKZX7H_sPh4wCoDj/view?usp=sharing
 
 
 Страницы:
