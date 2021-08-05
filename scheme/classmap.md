@@ -1,6 +1,7 @@
 **Текстовое описание classmap (черновик**).
 
-Cхема classmap из https://app.diagrams.net: https://drive.google.com/file/d/1249kIHRxAOtsfaa_HKZX7H_sPh4wCoDj/view?usp=sharing
+Cхема classmap из https://app.diagrams.net: 
+https://drive.google.com/file/d/133fhiKxh281fv0gw37lzsgma5Vrgb3of/view?usp=sharing
 
 
 Страницы:
