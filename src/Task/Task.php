@@ -3,7 +3,6 @@
 namespace TaskForce\Task;
 
 use TaskForce\Task\StatusInterface;
-use TaskForce\Task\StateMachine\StateMachine;
 use TaskForce\Task\StateMachine\CustomerStateMachine;
 use TaskForce\Task\StateMachine\ImplementorStateMachine;
 use TaskForce\Task\UserRoleEnum;
@@ -50,12 +49,10 @@ class Task implements StatusInterface
     public function getRoleById(int $userId)
     {
         if ($userId === $this->customerId) {
-            //return логика для заказчика
             return \TaskForce\Task\UserRoleEnum::customer();
         }
 
         if ($this->implementorId && $userId === $this->implementorId) {
-            //return логика для исполнителя
             return \TaskForce\Task\UserRoleEnum::implementor();
         }
 
@@ -63,8 +60,8 @@ class Task implements StatusInterface
     }
 
     /**
-     * Выполняет отслеживаемый сценарий для пользователя согласно его роли по отношению к задаче либо null,
-     * если пользователь не имеет отношения к задаче
+     * Выполняет отслеживаемый сценарий для пользователя согласно его роли по отношению к задаче
+     * либо null, если пользователь не имеет отношения к задаче
      * @param int $userId id пользователя
      * @return CustomerStateMachine|null сценарий с переходами действий и статусов
      */

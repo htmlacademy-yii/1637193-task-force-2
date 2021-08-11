@@ -6,6 +6,11 @@ use TaskForce\Task\TaskActionEnum;
 use TaskForce\Task\StatusInterface;
 use TaskForce\Task\TaskStatusEnum;
 
+use TaskForce\Task\Action\Respond;
+use TaskForce\Task\Action\Cancel;
+use TaskForce\Task\Action\Refuse;
+use TaskForce\Task\Action\Complete;
+
 class StateMachine
 {
     /**
