@@ -2,36 +2,25 @@
 
 namespace TaskForce\Task\Action;
 
+use TaskForce\Task\Task;
+
 abstract class TaskAction
 {
-    protected string $action;
-    protected string $actionDescription;
+    public const APPLY_ACTION = '';
+    public const ACTION_DESCRIPTION = '';
 
-
-    /**
-     * @return string Возвращает название действия, которое необходимо применить к задаче
-     */
-    public function getAction(): string
+    public function __construct()
     {
-        return $this->action;
+        [self::APPLY_ACTION => self::ACTION_DESCRIPTION];
     }
 
-    /**
-     * @return string Возвращает текстовое описание действия к задаче
-     */
-    public function getActionDescription(): string
-    {
-        return $this->actionDescription;
-    }
-
+    abstract public static function getAction(): array;
 
     /**
      * Проверяет, имеет ли право указанный пользователь выполнять действия по смене статуса задачи
-     * @param int $implementorId id исполнителя задачи
-     * @param int $userId id проверяемого пользователя
-     * @param int $customerId id заказчика задачи
-     * @param string $status статус задачи на текущий момент
+     * @param Task $task объект конкретной задачи
+     * @param int $currentUserId id пользователя
      * @return bool да\нет
      */
-    abstract protected function hasRights(int $implementorId, int $userId, int $customerId, string $status): bool;
+    abstract protected function hasRights(Task $task, int $currentUserId): bool;
 }
