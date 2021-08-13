@@ -2,6 +2,7 @@
 
 namespace TaskForce\Task\Action;
 
+use JetBrains\PhpStorm\ArrayShape;
 use TaskForce\Task\Task;
 use TaskForce\Task\TaskStatusEnum;
 
@@ -10,7 +11,7 @@ class RefuseAction extends TaskAction
     public const APPLY_ACTION = 'refuse';
     public const ACTION_DESCRIPTION = 'Отказаться от задачи';
 
-    public static function getAction(): array
+    #[ArrayShape([self::APPLY_ACTION => "string"])] public static function getAction(): array
     {
         return [self::APPLY_ACTION => self::ACTION_DESCRIPTION];
     }

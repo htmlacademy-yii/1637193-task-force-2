@@ -4,10 +4,8 @@ namespace TaskForce\Task\StateMachine;
 
 use TaskForce\Task\Action\TaskAction;
 use TaskForce\Task\Task;
-use TaskForce\Task\TaskActionEnum;
 use TaskForce\Task\StatusInterface;
 use TaskForce\Task\TaskStatusEnum;
-use Spatie\Enum\Enum;
 
 use TaskForce\Task\Action\RespondAction;
 use TaskForce\Task\Action\CancelAction;
@@ -37,10 +35,12 @@ class StateMachine
 
     /**
      * Проверяет, может ли выполнить переход в новое состояние из указанного
-     * @param CompleteAction|CancelAction|RefuseAction|RespondAction $action действие, приводящее к смене статуса
+     * @param TaskAction $action действие, приводящее к смене статуса
+     * @param Task $task
+     * @param int $currentUserId
      * @return bool да\нет
      */
-    public function can(CompleteAction|CancelAction|RefuseAction|RespondAction $action, Task $task, int $currentUserId): bool
+    public function can(TaskAction $action, Task $task, int $currentUserId): bool
     {
         if (!$this->transitions[$action::class]) {
             return false;
@@ -63,7 +63,7 @@ class StateMachine
     /**
      * Получает статус задачи, в которой она перейдёт после выполнения указанного действия при наличии этого статуса,
      * либо null, если  нового состояния нет
-     * @param CompleteAction|CancelAction|RefuseAction|RespondAction $action действие, приводящее к смене статуса
+     * @param TaskAction $action действие, приводящее к смене статуса
      * @param Task $task объект задачи
      * @param int $currentUserId id проверяемого пользователя
      * @return TaskStatusEnum|null Новый статус / null

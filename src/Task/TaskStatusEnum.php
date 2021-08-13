@@ -1,7 +1,7 @@
 <?php
 namespace TaskForce\Task;
 
-use Spatie\Enum\Enum;
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * @method static self new()
@@ -16,7 +16,13 @@ class TaskStatusEnum extends \Spatie\Enum\Enum
      * Возвращает «карты» статусов.
      * @return array Карта — это ассоциативный массив, где ключ — внутреннее имя, а значение — названия статуса на русском.
      */
-    protected static function labels(): array
+    #[ArrayShape([
+        'new' => "string",
+        'cancelled' => "string",
+        'in_progress' => "string",
+        'done' => "string",
+        'failed' => "string"
+    ])] protected static function labels(): array
     {
         return [
             'new' => 'Новая задача',

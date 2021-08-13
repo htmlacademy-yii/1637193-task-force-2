@@ -1,7 +1,7 @@
 <?php
 namespace TaskForce\Task;
 
-use Spatie\Enum\Enum;
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * @method static self add_new()
@@ -16,7 +16,13 @@ class TaskActionEnum extends \Spatie\Enum\Enum
      * Возвращает «карты» действий.
      * @return array Карта — это ассоциативный массив, где ключ — внутреннее имя, а значение — названия действия на русском.
      */
-    protected static function labels(): array
+    #[ArrayShape([
+        'add_new' => "string",
+        'cancel' => "string",
+        'respond' => "string",
+        'complete' => "string",
+        'refuse' => "string"
+    ])] protected static function labels(): array
     {
         return [
             'add_new' => 'Добавить новую задачу',

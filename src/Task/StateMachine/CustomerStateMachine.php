@@ -3,7 +3,6 @@
 namespace TaskForce\Task\StateMachine;
 
 use TaskForce\Task\Action\CancelAction;
-use TaskForce\Task\Action\RespondAction;
 use TaskForce\Task\StatusInterface;
 use TaskForce\Task\TaskStatusEnum;
 

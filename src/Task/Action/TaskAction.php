@@ -24,5 +24,5 @@ abstract class TaskAction
      * @param int $currentUserId id пользователя
      * @return bool да\нет
      */
-    abstract protected function hasRights(Task $task, int $currentUserId): bool;
+    abstract public function hasRights(Task $task, int $currentUserId): bool;
 }

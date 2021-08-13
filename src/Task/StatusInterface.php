@@ -2,8 +2,6 @@
 
 namespace TaskForce\Task;
 
-use TaskForce\Task\TaskStatusEnum;
-
 interface StatusInterface
 {
     /**

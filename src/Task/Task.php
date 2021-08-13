@@ -4,10 +4,8 @@ namespace TaskForce\Task;
 
 use TaskForce\Task\Exceptions\AppException;
 use TaskForce\Task\StateMachine\StateMachine;
-use TaskForce\Task\StatusInterface;
 use TaskForce\Task\StateMachine\CustomerStateMachine;
 use TaskForce\Task\StateMachine\ImplementorStateMachine;
-use TaskForce\Task\UserRoleEnum;
 
 class Task implements StatusInterface
 {
@@ -46,7 +44,8 @@ class Task implements StatusInterface
     /**
      * Определяет по id пользователя, к какой роли он принадлежит
      * @param int $userId id пользователя
-     * @return null логика для определенного типа пользователя
+     * @return \TaskForce\Task\UserRoleEnum логика для определенного типа пользователя
+     * @throws AppException
      */
     public function getRoleById(int $userId): UserRoleEnum
     {
@@ -65,7 +64,8 @@ class Task implements StatusInterface
      * Выполняет отслеживаемый сценарий для пользователя согласно его роли по отношению к задаче
      * либо null, если пользователь не имеет отношения к задаче
      * @param int $userId id пользователя
-     * @return CustomerStateMachine|null сценарий с переходами действий и статусов
+     * @return StateMachine сценарий с переходами действий и статусов
+     * @throws AppException
      */
     public function getStatefulTask(int $userId): StateMachine
     {
@@ -79,6 +79,6 @@ class Task implements StatusInterface
             return new ImplementorStateMachine($this);
         }
 
-        return null;
+        throw new AppException('Unknown state machine because user role is undefined');
     }
 }
