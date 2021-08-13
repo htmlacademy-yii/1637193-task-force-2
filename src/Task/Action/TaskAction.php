@@ -3,16 +3,16 @@
 namespace TaskForce\Task\Action;
 
 use TaskForce\Task\Task;
+use TaskForce\Task\TaskStatusEnum;
 
 abstract class TaskAction
 {
     public const APPLY_ACTION = '';
     public const ACTION_DESCRIPTION = '';
-    public $transitFromStatus;
-    public $transitToStatus;
+    public ?TaskStatusEnum $transitFromStatus;
+    public ?TaskStatusEnum $transitToStatus;
 
-
-    public function __construct($fromStatus, $toStatus)
+    public function __construct($fromStatus = null, $toStatus = null)
     {
         $this->transitFromStatus = $fromStatus;
         $this->transitToStatus = $toStatus;

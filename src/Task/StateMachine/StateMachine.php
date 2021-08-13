@@ -45,7 +45,7 @@ class StateMachine
         if (!$this->transitions[$action::class]) {
             return false;
         }
-        if ($action->transitFromStatus === $task->getStatus()) {
+        if ($this->transitions[$action::class]->transitFromStatus->equals($task->getStatus())) {
             return $action->hasRights($task, $currentUserId);
         }
         return false;
