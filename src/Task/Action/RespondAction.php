@@ -7,14 +7,8 @@ use TaskForce\Task\TaskStatusEnum;
 
 class RespondAction extends TaskAction
 {
-
     public const APPLY_ACTION = 'respond';
     public const ACTION_DESCRIPTION = 'Откликнуться на задачу';
-
-    public static function getAction(): array
-    {
-        return [self::APPLY_ACTION => self::ACTION_DESCRIPTION];
-    }
 
     /**
      * Проверяет, имеет ли право указанный пользователь откликнуться на задачу

@@ -22,13 +22,10 @@ assert($inWorkTask->implementorId == 2, 'хранит id исполнителя'
 
 $taskSM = $newTask->getStatefulTask($customer_id);
 
-
 $cancel = new CancelAction();
 var_dump($cancel);
-var_dump($cancel::getAction());
 
 var_dump(TaskActionEnum::cancel());
-
 assert($taskSM->can($cancel, $newTask, $customer_id) == true, 'проверяет доступное действие');
 
 //assert($taskSM->can(TaskActionEnum::CANCEL()) == true, 'проверяет доступное действие');

@@ -10,19 +10,13 @@ class CancelAction extends TaskAction
     public const APPLY_ACTION = 'cancel';
     public const ACTION_DESCRIPTION = 'Отменить задачу';
 
-    public static function getAction(): array
-    {
-        return [self::APPLY_ACTION => self::ACTION_DESCRIPTION];
-    }
-
-
     /**
      * Проверяет, имеет ли право указанный пользователь отменить задачу
      * @param Task $task объект конкретной задачи
      * @param int $currentUserId id пользователя
      * @return bool да\нет
      */
-    protected function hasRights(Task $task, int $currentUserId): bool
+    public function hasRights(Task $task, int $currentUserId): bool
     {
         return ($task->customerId === $currentUserId) && ($task->getStatus() === TaskStatusEnum::new());
     }

@@ -2,19 +2,17 @@
 
 namespace TaskForce\Task\StateMachine;
 
-use TaskForce\Task\TaskActionEnum;
+use TaskForce\Task\Action\CancelAction;
+use TaskForce\Task\Action\RespondAction;
 use TaskForce\Task\StatusInterface;
 use TaskForce\Task\TaskStatusEnum;
 
 class CustomerStateMachine extends StateMachine
 {
-    public \WeakMap $transitions;
-
     public function __construct(StatusInterface $document)
     {
-        $this->transitions = new \WeakMap();
-        $this->transitions[TaskActionEnum::cancel()] = ['from' => TaskStatusEnum::new(), 'to' => TaskStatusEnum::cancelled()];
-        $this->transitions[TaskActionEnum::complete()] = ['from' => TaskStatusEnum::in_progress(), 'to' => TaskStatusEnum::done()];
-        parent::__construct($document, $this->transitions);
+        $this->document = $document;
+        $respondAction = new CancelAction(TaskStatusEnum::new(), TaskStatusEnum::cancelled());
+        $this->transitions[$respondAction::class] = $respondAction;
     }
 }
