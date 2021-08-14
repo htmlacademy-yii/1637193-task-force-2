@@ -1,6 +1,7 @@
 <?php
 require_once "vendor/autoload.php";
 
+use TaskForce\Task\Action\TaskAction;
 use TaskForce\Task\TaskActionEnum;
 use TaskForce\Task\Task;
 use TaskForce\Task\TaskStatusEnum;
@@ -23,18 +24,18 @@ assert($inWorkTask->implementorId == 2, 'хранит id исполнителя'
 $taskSM = $newTask->getStatefulTask($customer_id);
 
 
-$cancel = new CancelAction();
-var_dump($cancel);
-var_dump($cancel::getAction());
+$cancelAction = new CancelAction(TaskStatusEnum::new(), TaskStatusEnum::cancelled());
+$completeAction = new CompleteAction(TaskStatusEnum::in_progress(), TaskStatusEnum::done());
+$respondAction = new RespondAction(TaskStatusEnum::new(), TaskStatusEnum::in_progress());
+$refuseAction = new RefuseAction(TaskStatusEnum::in_progress(), TaskStatusEnum::failed());
 
-var_dump(TaskActionEnum::cancel());
+assert($taskSM->can($cancelAction, $newTask, $customer_id) == true, 'проверяет доступное действие');
 
-assert($taskSM->can($cancel, $newTask, $customer_id) == true, 'проверяет доступное действие');
+assert($taskSM->can($refuseAction, $inWorkTask, $customer_id) == false, 'проверяет недоступное действие');
 
-//assert($taskSM->can(TaskActionEnum::CANCEL()) == true, 'проверяет доступное действие');
-//assert($taskSM->can(TaskActionEnum::REFUSE()) == false, 'проверяет недоступное действие');
-//assert($taskSM->getCurrentStatus()->label == 'Новая задача', 'возвращает текущий статус');
-//assert($taskSM->getNextStatus(TaskActionEnum::cancel())->label == 'Задача отменена', 'возвращает следующий статус');
-//assert($taskSM->getAvailableActions()[0] == TaskActionEnum::cancel(), 'возвращает доступные действия');
+assert($taskSM->getCurrentStatus()->label === 'Новая задача', 'возвращает текущий статус');
 
+//assert($taskSM->getNextStatus($refuseAction, $inWorkTask, $implementor_id)->label === 'Задача провалена', 'возвращает следующий статус');
+
+//assert($taskSM->getAvailableActions()[0] == $cancelAction, 'возвращает доступные действия');
 echo 'Тесты пройдены' . "<br>";

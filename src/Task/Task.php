@@ -2,7 +2,8 @@
 
 namespace TaskForce\Task;
 
-use TaskForce\Task\StatusInterface;
+use TaskForce\Task\Exceptions\AppException;
+use TaskForce\Task\StateMachine\StateMachine;
 use TaskForce\Task\StateMachine\CustomerStateMachine;
 use TaskForce\Task\StateMachine\ImplementorStateMachine;
 use TaskForce\Task\UserRoleEnum;
@@ -44,36 +45,38 @@ class Task implements StatusInterface
     /**
      * Определяет по id пользователя, к какой роли он принадлежит
      * @param int $userId id пользователя
-     * @return null логика для определенного типа пользователя
+     * @return UserRoleEnum логика для определенного типа пользователя
+     * @throws AppException исключение на случай невозможности определить роль пользователя
      */
-    public function getRoleById(int $userId)
+    public function getRoleById(int $userId): UserRoleEnum
     {
         if ($userId === $this->customerId) {
-            return \TaskForce\Task\UserRoleEnum::customer();
+            return UserRoleEnum::customer();
         }
 
         if ($this->implementorId && $userId === $this->implementorId) {
-            return \TaskForce\Task\UserRoleEnum::implementor();
+            return UserRoleEnum::implementor();
         }
 
-        return null;
+        throw new AppException('Роль пользователя не определена');
     }
 
     /**
      * Выполняет отслеживаемый сценарий для пользователя согласно его роли по отношению к задаче
      * либо null, если пользователь не имеет отношения к задаче
      * @param int $userId id пользователя
-     * @return CustomerStateMachine|null сценарий с переходами действий и статусов
+     * @return StateMachine|null сценарий с переходами действий и статусов для конкретной роли заказчика\исполнителя
+     * @throws AppException
      */
-    public function getStatefulTask(int $userId): ?CustomerStateMachine
+    public function getStatefulTask(int $userId): ?StateMachine
     {
         $role = $this->getRoleById($userId);
 
-        if ($role?->equals(UserRoleEnum::customer())) {
+        if ($role->equals(UserRoleEnum::customer())) {
             return new CustomerStateMachine($this);
         }
 
-        if ($role?->equals(UserRoleEnum::implementor())) {
+        if ($role->equals(UserRoleEnum::implementor())) {
             return new ImplementorStateMachine($this);
         }
 

@@ -10,10 +10,6 @@ class RefuseAction extends TaskAction
     public const APPLY_ACTION = 'refuse';
     public const ACTION_DESCRIPTION = 'Отказаться от задачи';
 
-    public static function getAction(): array
-    {
-        return [self::APPLY_ACTION => self::ACTION_DESCRIPTION];
-    }
 
     /**
      * Проверяет, имеет ли право указанный пользователь отказаться от задачи
@@ -21,7 +17,7 @@ class RefuseAction extends TaskAction
      * @param int $currentUserId id пользователя
      * @return bool да\нет
      */
-    protected function hasRights(Task $task, int $currentUserId): bool
+    public function hasRights(Task $task, int $currentUserId): bool
     {
         return ($task->implementorId === $currentUserId) && ($task->getStatus() === TaskStatusEnum::in_progress());
     }

@@ -11,10 +11,6 @@ class RespondAction extends TaskAction
     public const APPLY_ACTION = 'respond';
     public const ACTION_DESCRIPTION = 'Откликнуться на задачу';
 
-    public static function getAction(): array
-    {
-        return [self::APPLY_ACTION => self::ACTION_DESCRIPTION];
-    }
 
     /**
      * Проверяет, имеет ли право указанный пользователь откликнуться на задачу
@@ -22,7 +18,7 @@ class RespondAction extends TaskAction
      * @param int $currentUserId id пользователя
      * @return bool да\нет
      */
-    protected function hasRights(Task $task, int $currentUserId): bool
+    public function hasRights(Task $task, int $currentUserId): bool
     {
         return ($task->implementorId === $currentUserId) && ($task->getStatus() === TaskStatusEnum::new());
     }
