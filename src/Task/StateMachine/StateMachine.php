@@ -25,11 +25,11 @@ class StateMachine
 
     /**
      * Применяет новый статус для задачи, при его возможности
-     * @param CompleteAction|CancelAction|RefuseAction|RespondAction $action действие, приводящее к смене статуса
+     * @param TaskAction $action действие, приводящее к смене статуса
      * @param Task $task объект задачи
      * @param int $currentUserId id проверяемого пользователя
      */
-    public function apply(CompleteAction|CancelAction|RefuseAction|RespondAction $action, $task, $currentUserId): void
+    public function apply(TaskAction $action, $task, $currentUserId): void
     {
         if ($this->can($action, $task, $currentUserId)) {
             $this->document->setStatus($this->getNextStatus($action, $task, $currentUserId));
@@ -99,6 +99,4 @@ class StateMachine
 
         return $actions;
     }
-
-
 }

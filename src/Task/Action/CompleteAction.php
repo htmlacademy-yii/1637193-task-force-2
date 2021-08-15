@@ -3,13 +3,11 @@
 namespace TaskForce\Task\Action;
 
 use TaskForce\Task\Task;
-use TaskForce\Task\TaskStatusEnum;
 
 class CompleteAction extends TaskAction
 {
     public const APPLY_ACTION = 'complete';
     public const ACTION_DESCRIPTION = 'Завершить задачу';
-
 
     /**
      * Проверяет, имеет ли право указанный пользователь завершить задачу
@@ -19,6 +17,6 @@ class CompleteAction extends TaskAction
      */
     public function hasRights(Task $task, int $currentUserId): bool
     {
-        return ($task->customerId === $currentUserId) && ($task->getStatus() === TaskStatusEnum::in_progress());
+        return $task->customerId === $currentUserId;
     }
 }

@@ -3,14 +3,11 @@
 namespace TaskForce\Task\Action;
 
 use TaskForce\Task\Task;
-use TaskForce\Task\TaskStatusEnum;
 
 class RespondAction extends TaskAction
 {
-
     public const APPLY_ACTION = 'respond';
     public const ACTION_DESCRIPTION = 'Откликнуться на задачу';
-
 
     /**
      * Проверяет, имеет ли право указанный пользователь откликнуться на задачу
@@ -20,6 +17,6 @@ class RespondAction extends TaskAction
      */
     public function hasRights(Task $task, int $currentUserId): bool
     {
-        return ($task->implementorId === $currentUserId) && ($task->getStatus() === TaskStatusEnum::new());
+        return $task->implementorId === $currentUserId;
     }
 }

@@ -35,7 +35,7 @@ assert($taskSM->can($refuseAction, $inWorkTask, $customer_id) == false, 'про�
 
 assert($taskSM->getCurrentStatus()->label === 'Новая задача', 'возвращает текущий статус');
 
-//assert($taskSM->getNextStatus($refuseAction, $inWorkTask, $implementor_id)->label === 'Задача провалена', 'возвращает следующий статус');
+assert($taskSM->getNextStatus($refuseAction, $inWorkTask, $implementor_id)->label === 'Задача провалена', 'возвращает следующий статус');
 
-//assert($taskSM->getAvailableActions()[0] == $cancelAction, 'возвращает доступные действия');
+assert($taskSM->getAvailableActions()[0] == $cancelAction, 'возвращает доступные действия');
 echo 'Тесты пройдены' . "<br>";

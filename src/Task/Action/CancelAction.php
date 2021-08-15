@@ -3,7 +3,6 @@
 namespace TaskForce\Task\Action;
 
 use TaskForce\Task\Task;
-use TaskForce\Task\TaskStatusEnum;
 
 class CancelAction extends TaskAction
 {
@@ -18,6 +17,6 @@ class CancelAction extends TaskAction
      */
     public function hasRights(Task $task, int $currentUserId): bool
     {
-        return ($task->customerId === $currentUserId) && ($task->getStatus() === TaskStatusEnum::new());
+        return $task->customerId === $currentUserId;
     }
 }

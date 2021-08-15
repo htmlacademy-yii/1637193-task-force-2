@@ -17,7 +17,6 @@ abstract class TaskAction
         $this->transitToStatus = $toStatus;
     }
 
-
     /**
      * Проверяет, имеет ли право указанный пользователь выполнять действия по смене статуса задачи
      * @param Task $task объект конкретной задачи

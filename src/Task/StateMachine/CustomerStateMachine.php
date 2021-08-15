@@ -9,7 +9,6 @@ use TaskForce\Task\TaskStatusEnum;
 
 class CustomerStateMachine extends StateMachine
 {
-
     public function __construct(StatusInterface $document)
     {
         $this->document = $document;
