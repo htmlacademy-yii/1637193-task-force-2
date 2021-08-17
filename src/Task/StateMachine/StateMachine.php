@@ -43,7 +43,7 @@ class StateMachine
      */
     public function can(TaskAction $action, Task $task, int $currentUserId): bool
     {
-        if (!$this->transitions[$action::class]) {
+        if (!isset($this->transitions[$action::class])) {
             return false;
         }
         if ($action->transitFromStatus === $task->getStatus()) {
