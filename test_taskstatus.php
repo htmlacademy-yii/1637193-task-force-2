@@ -35,8 +35,18 @@ assert($taskSM->can($refuseAction, $inWorkTask, $customer_id) == false, 'про�
 
 assert($taskSM->getCurrentStatus()->label === 'Новая задача', 'возвращает текущий статус');
 
-$nextStatusAfterRefuse = $taskSM->getNextStatus($refuseAction, $inWorkTask, $implementor_id);
-assert($nextStatusAfterRefuse?->label === 'Задача провалена', 'возвращает следующий статус');
+//$nextStatusAfterRefuse = $taskSM->getNextStatus($refuseAction, $inWorkTask, $implementor_id);
+//assert($nextStatusAfterRefuse?->label === 'Задача провалена', 'возвращает следующий статус');
 
-assert($taskSM->getAvailableActions()[0] == $cancelAction, 'возвращает доступные действия');
-echo 'Тесты пройдены' . "<br>";
+$availableActions = $taskSM->getAvailableActions();
+// можно проверить по ключу массива $actions
+assert(isset($availableActions[$cancelAction::class]), 'возвращает доступные действия');
+
+// Можно проверить является ли $action экземпляром определенного класса. Это не лучший способ, так как
+// не факт, что $action, который проверяем, будет первым
+$firstAvailableAction = array_pop($availableActions);
+// happy path
+assert($firstAvailableAction instanceof $cancelAction, 'первое возможное действие это отмена');
+// non-happy path
+assert(!($firstAvailableAction instanceof $refuseAction), 'первое возможное действие это НЕ отказ');
+echo 'Тесты пройдены' . PHP_EOL;
