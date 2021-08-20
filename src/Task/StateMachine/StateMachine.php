@@ -4,15 +4,8 @@ namespace TaskForce\Task\StateMachine;
 
 use TaskForce\Task\Action\TaskAction;
 use TaskForce\Task\Task;
-use TaskForce\Task\TaskActionEnum;
 use TaskForce\Task\StatusInterface;
 use TaskForce\Task\TaskStatusEnum;
-use Spatie\Enum\Enum;
-
-use TaskForce\Task\Action\RespondAction;
-use TaskForce\Task\Action\CancelAction;
-use TaskForce\Task\Action\RefuseAction;
-use TaskForce\Task\Action\CompleteAction;
 
 class StateMachine
 {
@@ -29,7 +22,7 @@ class StateMachine
      * @param Task $task объект задачи
      * @param int $currentUserId id проверяемого пользователя
      */
-    public function apply(TaskAction $action, $task, $currentUserId): void
+    public function apply(TaskAction $action, Task $task, int $currentUserId): void
     {
         if ($this->can($action, $task, $currentUserId)) {
             $this->document->setStatus($this->getNextStatus($action, $task, $currentUserId));
@@ -43,7 +36,7 @@ class StateMachine
      */
     public function can(TaskAction $action, Task $task, int $currentUserId): bool
     {
-        if (!$this->transitions[$action::class]) {
+        if (!isset($this->transitions[$action::class])) {
             return false;
         }
         if ($action->transitFromStatus === $task->getStatus()) {
@@ -63,7 +56,7 @@ class StateMachine
 
     /**
      * Получает статус задачи, в которой она перейдёт после выполнения указанного действия при наличии этого статуса,
-     * либо null, если  нового состояния нет
+     * либо null, если нового состояния нет
      * @param TaskAction $action действие, приводящее к смене статуса
      * @param Task $task объект задачи
      * @param int $currentUserId id проверяемого пользователя
@@ -87,11 +80,9 @@ class StateMachine
         $currentStatus = $this->getCurrentStatus();
         $actions = [];
 
-
         foreach ($this->transitions as $statuses) {
-
             foreach ($statuses as $action => $status) {
-                if ($currentStatus == $status['transitFromStatus']) {
+                if ($currentStatus === $status) {
                     $actions[] = $action;
                 }
             }
