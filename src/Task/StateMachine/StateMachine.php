@@ -80,11 +80,9 @@ class StateMachine
         $currentStatus = $this->getCurrentStatus();
         $actions = [];
 
-        foreach ($this->transitions as $statuses) {
-            foreach ($statuses as $action => $status) {
-                if ($currentStatus === $status) {
-                    $actions[] = $action;
-                }
+        foreach ($this->transitions as $stateActionClassName => $stateAction) {
+            if ($currentStatus->equals($stateAction->transitFromStatus)) {
+                $actions[$stateActionClassName] = $stateAction;
             }
         }
 

@@ -2,6 +2,7 @@
 
 require_once "vendor/autoload.php";
 
+use TaskForce\Task\Action\TaskAction;
 use TaskForce\Task\Task;
 use TaskForce\Task\TaskStatusEnum;
 use \TaskForce\Task\Action\CancelAction;
@@ -12,13 +13,15 @@ use \TaskForce\Task\Action\RespondAction;
 $customer_id = 1; //заказчик
 $implementor_id = 2; //исполнитель
 
-$newTask = new Task(TaskStatusEnum::NEW(), $customer_id);
+$newTask = new Task(TaskStatusEnum::NEW(), $customer_id); //новая задача (для заказчика)
+$newTask_implementor = new Task(TaskStatusEnum::NEW(), $customer_id, $implementor_id); //новая задача (логика для исполнителя)
 assert($newTask->customerId == 1, 'хранит id заказчика');
 
 $inWorkTask = new Task(TaskStatusEnum::IN_PROGRESS(), $customer_id, $implementor_id);
 assert($inWorkTask->implementorId == 2, 'хранит id исполнителя');
 
-$taskSM = $newTask->getStatefulTask($customer_id);
+$taskSM = $newTask->getStatefulTask($customer_id); //отслеживаем новую задачу для заказчика
+$taskSM_for_implementor = $newTask_implementor->getStatefulTask($implementor_id); //отслеживаем другую новую задачу для исполнителя
 
 //объявление действий
 $cancelAction = new CancelAction(TaskStatusEnum::new(), TaskStatusEnum::cancelled());
@@ -32,21 +35,22 @@ assert($taskSM->can($refuseAction, $inWorkTask, $customer_id) == false, 'про�
 
 assert($taskSM->getCurrentStatus()->label === 'Новая задача', 'возвращает текущий статус');
 
-//todo тут нарочно подменил в задаче заказчика на исполнителя. По ТЗ отказаться от задачи может только исполнитель,
-// поэтому на заказчика должен срабатывать ассерт. Однако у меня ассерт спокойно проходит дальше. https://skr.sh/s9dRl0YR503
-//заранее извиняюсь за var_dump: оставил для демонстрации. Вопрос: почему ассерт не срабатывает? ни в одном из случаев ниже?
-// Он должен быть при заказчике 100%
-//$nextStatusAfterRefuse = $taskSM->getNextStatus($refuseAction, $inWorkTask, $implementor_id);
+//след. статус после отказа для заказчика
 $nextStatusAfterRefuse = $taskSM->getNextStatus($refuseAction, $inWorkTask, $customer_id);
-var_dump(assert($nextStatusAfterRefuse === 'Задача провалена'));
-var_dump($nextStatusAfterRefuse?->label);
-var_dump($nextStatusAfterRefuse?->label=== 'Задача провалена');
-assert($nextStatusAfterRefuse?->label === 'Задача провалена', 'возвращает следующий статус');
-assert(1 === 2, 'возвращает следующий статус');
 
+assert($nextStatusAfterRefuse?->label === null, 'возвращает следующий статус');
+
+//след. статус после отклика для исполнителя
+$nextStatusAfterRespond = $taskSM_for_implementor->getNextStatus($respondAction, $newTask_implementor, $implementor_id);
+assert($nextStatusAfterRespond?->label === 'Задача в работе', 'возвращает следующий статус');
+
+//доступные действия
 $availableActions = $taskSM->getAvailableActions();
+$availableActions_implementor = $taskSM_for_implementor->getAvailableActions();
+
 // проверяем по ключу массива $actions
-assert(isset($availableActions[$cancelAction::class]), 'возвращает доступные действия');
+assert(isset($availableActions[$cancelAction::class]), 'возвращает доступные действия у заказчика');
+assert(isset($availableActions_implementor[$respondAction::class]), 'возвращает доступные действия у исполнителя');
 
 // проверка $action - является ли экземпляром определенного класса (но не факт, что проверяемый $action будет первым)
 $firstAvailableAction = array_pop($availableActions);
