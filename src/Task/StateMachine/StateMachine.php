@@ -2,44 +2,45 @@
 
 namespace TaskForce\Task\StateMachine;
 
-use TaskForce\Task\TaskActionEnum;
+use TaskForce\Task\Action\TaskAction;
+use TaskForce\Task\Task;
 use TaskForce\Task\StatusInterface;
 use TaskForce\Task\TaskStatusEnum;
 
 class StateMachine
 {
     /**
-     * StateMachine constructor.
-     * @param StatusInterface $document
-     * @param \WeakMap $transitions
+     * @var array<TaskAction>
      */
-    public function __construct(
-        public StatusInterface $document,
-        public \WeakMap $transitions
-    )
-    {
-    }
+
+    public array $transitions = [];
+    public StatusInterface $document;
 
     /**
      * Применяет новый статус для задачи, при его возможности
-     * @param TaskActionEnum $action действие, приводящее к смене статуса
+     * @param TaskAction $action действие, приводящее к смене статуса
+     * @param Task $task объект задачи
+     * @param int $currentUserId id проверяемого пользователя
      */
-    public function apply(TaskActionEnum $action): void
+    public function apply(TaskAction $action, Task $task, int $currentUserId): void
     {
-        if ($this->can($action)) {
-            $this->document->setStatus($this->getNextStatus($action));
+        if ($this->can($action, $task, $currentUserId)) {
+            $this->document->setStatus($this->getNextStatus($action, $task, $currentUserId));
         }
     }
 
     /**
      * Проверяет, может ли выполнить переход в новое состояние из указанного
-     * @param TaskActionEnum $action действие, приводящее к смене статуса
+     * @param TaskAction $action действие, приводящее к смене статуса
      * @return bool да\нет
      */
-    public function can(TaskActionEnum $action): bool
+    public function can(TaskAction $action, Task $task, int $currentUserId): bool
     {
-        if (isset($this->transitions[$action])) {
-            return $this->transitions[$action]['from']->equals($this->document->getStatus());
+        if (!isset($this->transitions[$action::class])) {
+            return false;
+        }
+        if ($action->transitFromStatus === $task->getStatus()) {
+            return $action->hasRights($task, $currentUserId);
         }
         return false;
     }
@@ -55,14 +56,16 @@ class StateMachine
 
     /**
      * Получает статус задачи, в которой она перейдёт после выполнения указанного действия при наличии этого статуса,
-     * либо null, если  нового состояния нет
-     * @param TaskActionEnum $action действие, приводящее к смене статуса
+     * либо null, если нового состояния нет
+     * @param TaskAction $action действие, приводящее к смене статуса
+     * @param Task $task объект задачи
+     * @param int $currentUserId id проверяемого пользователя
      * @return TaskStatusEnum|null Новый статус / null
      */
-    public function getNextStatus(TaskActionEnum $action): ?TaskStatusEnum
+    public function getNextStatus(TaskAction $action, Task $task, int $currentUserId): ?TaskStatusEnum
     {
-        if ($this->can($action)) {
-            return $this->transitions[$action]['to'];
+        if ($this->can($action, $task, $currentUserId)) {
+            return $this->transitions[$action::class]->transitToStatus;
         }
 
         return null;
@@ -77,14 +80,12 @@ class StateMachine
         $currentStatus = $this->getCurrentStatus();
         $actions = [];
 
-        foreach ($this->transitions as $action => $status) {
-            if ($currentStatus->equals($status['from'])) {
-                $actions[] = $action;
+        foreach ($this->transitions as $stateActionClassName => $stateAction) {
+            if ($currentStatus->equals($stateAction->transitFromStatus)) {
+                $actions[$stateActionClassName] = $stateAction;
             }
         }
 
         return $actions;
     }
-
-
 }

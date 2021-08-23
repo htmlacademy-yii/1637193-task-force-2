@@ -38,7 +38,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `name` TEXT(100) NOT NULL,
   `email` TEXT(100) NOT NULL,
   `password` TEXT(100) NOT NULL,
@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `phone` TEXT(20) NULL,
   `skype` TEXT(100) NULL,
   `messenger` TEXT(100) NULL,
+  `avatar_id` INT NULL,
   `notify_new_message` TINYINT NULL DEFAULT 1,
   `notify_task_actions` TINYINT NULL DEFAULT 1,
   `notify_new_review` TINYINT NULL DEFAULT 1,
@@ -60,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `role` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `city_id_idx` (`location_id` ASC) VISIBLE,
-  CONSTRAINT `location_id`
+  CONSTRAINT `location_user_id`
     FOREIGN KEY (`location_id`)
     REFERENCES `locations` (`id`)
     ON DELETE NO ACTION
@@ -69,9 +70,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `user_spec_categories`
+-- Table `user_specialization_categories`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `user_spec_categories` (
+CREATE TABLE IF NOT EXISTS `user_specialization_categories` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`))
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `implementor_specialization` (
   INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `imp_specialization_id`
     FOREIGN KEY (`specialization_id`)
-    REFERENCES `user_spec_categories` (`id`)
+    REFERENCES `user_specialization_categories` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `user_specialization_id`
@@ -107,7 +108,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `tasks` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `status_id` TINYINT NULL DEFAULT 0,
   `customer_id` INT NULL,
   `implementor_id` INT NULL,
@@ -124,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   INDEX `location_id_idx` (`location_id` ASC) VISIBLE,
   CONSTRAINT `category_id`
     FOREIGN KEY (`category_id`)
-    REFERENCES `user_spec_categories` (`id`)
+    REFERENCES `user_specialization_categories` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `customer_id`
@@ -137,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
     REFERENCES `users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `location_id`
+  CONSTRAINT `location_task_id`
     FOREIGN KEY (`location_id`)
     REFERENCES `locations` (`id`)
     ON DELETE NO ACTION
@@ -151,7 +152,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `feedback_list` (
   `id` INT NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `text` TEXT(200) NULL,
   `score` FLOAT NULL,
   `task_id` INT NULL,
@@ -250,7 +251,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `responses` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `implementor_id` INT NULL,
   `task_id` INT NULL,
   `cost` INT NULL,
@@ -282,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `task_id` INT NOT NULL,
   `is_read` TINYINT NOT NULL DEFAULT 0,
-  `updated_at` DATETIME NULL,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `sender_id_idx` (`sender_id` ASC) VISIBLE,
   INDEX `recipient_id_idx` (`recipient_id` ASC) VISIBLE,
@@ -304,28 +305,6 @@ CREATE TABLE IF NOT EXISTS `messages` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table `avatar_has_files`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `avatar_has_files` (
-  `id` INT NOT NULL,
-  `file_id` INT NULL,
-  `user_id` INT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
-  INDEX `portfolio_file_id_idx` (`file_id` ASC) VISIBLE,
-  CONSTRAINT `avatar_user_id`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `users` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `user_file_id`
-    FOREIGN KEY (`file_id`)
-    REFERENCES `files` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
