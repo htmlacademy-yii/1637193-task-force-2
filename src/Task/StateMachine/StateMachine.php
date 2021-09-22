@@ -3,6 +3,8 @@
 namespace TaskForce\Task\StateMachine;
 
 use TaskForce\Task\Action\TaskAction;
+use TaskForce\Task\Exceptions\TaskActionException;
+use TaskForce\Task\Exceptions\TaskStatusException;
 use TaskForce\Task\Task;
 use TaskForce\Task\StatusInterface;
 use TaskForce\Task\TaskStatusEnum;
@@ -12,15 +14,15 @@ class StateMachine
     /**
      * @var array<TaskAction>
      */
-
     public array $transitions = [];
     public StatusInterface $document;
 
     /**
-     * Применяет новый статус для задачи, при его возможности
-     * @param TaskAction $action действие, приводящее к смене статуса
-     * @param Task $task объект задачи
-     * @param int $currentUserId id проверяемого пользователя
+     * Применяет новый статус для задачи, при его возможности применения
+     * @param TaskAction $action Действие, приводящее к смене статуса
+     * @param Task $task Объект задачи
+     * @param int $currentUserId Id проверяемого пользователя
+     * @throws TaskStatusException
      */
     public function apply(TaskAction $action, Task $task, int $currentUserId): void
     {
@@ -31,8 +33,8 @@ class StateMachine
 
     /**
      * Проверяет, может ли выполнить переход в новое состояние из указанного
-     * @param TaskAction $action действие, приводящее к смене статуса
-     * @return bool да\нет
+     * @param TaskAction $action Действие, приводящее к смене статуса
+     * @return bool Да\нет
      */
     public function can(TaskAction $action, Task $task, int $currentUserId): bool
     {
@@ -42,12 +44,13 @@ class StateMachine
         if ($action->transitFromStatus === $task->getStatus()) {
             return $action->hasRights($task, $currentUserId);
         }
+
         return false;
     }
 
     /**
      * Возвращает текущий статус задачи
-     * @return TaskStatusEnum
+     * @return TaskStatusEnum Текущий статус задачи
      */
     public function getCurrentStatus(): TaskStatusEnum
     {
@@ -57,10 +60,11 @@ class StateMachine
     /**
      * Получает статус задачи, в которой она перейдёт после выполнения указанного действия при наличии этого статуса,
      * либо null, если нового состояния нет
-     * @param TaskAction $action действие, приводящее к смене статуса
-     * @param Task $task объект задачи
-     * @param int $currentUserId id проверяемого пользователя
-     * @return TaskStatusEnum|null Новый статус / null
+     * @param TaskAction $action Действие, приводящее к смене статуса
+     * @param Task $task Объект задачи
+     * @param int $currentUserId Id проверяемого пользователя
+     * @return TaskStatusEnum Новый статус / null
+     * @throws TaskStatusException Исключение при отсутствии доступного статуса задачи
      */
     public function getNextStatus(TaskAction $action, Task $task, int $currentUserId): ?TaskStatusEnum
     {
@@ -68,12 +72,12 @@ class StateMachine
             return $this->transitions[$action::class]->transitToStatus;
         }
 
-        return null;
+        throw new TaskStatusException('Нет доступного статуса задачи для перехода из текущего');
     }
 
     /**
      * Выдает список новых действий для текущего статуса задачи
-     * @return array массив с элементами возможных новых действий для текущего статуса задачи либо пустой массив при их отсутствии
+     * @return array Массив с элементами возможных новых действий для текущего статуса задачи либо пустой массив при их отсутствии
      */
     public function getAvailableActions(): array
     {
