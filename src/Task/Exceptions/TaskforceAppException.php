@@ -2,7 +2,7 @@
 
 namespace TaskForce\Task\Exceptions;
 
-class AppException extends \Exception
+class TaskforceAppException extends \Exception
 {
 
 }

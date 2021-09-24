@@ -11,9 +11,9 @@ class CompleteAction extends TaskAction
 
     /**
      * Проверяет, имеет ли право указанный пользователь завершить задачу
-     * @param Task $task объект конкретной задачи
-     * @param int $currentUserId id пользователя
-     * @return bool да\нет
+     * @param Task $task Объект конкретной задачи
+     * @param int $currentUserId Id пользователя
+     * @return bool Да\нет
      */
     public function hasRights(Task $task, int $currentUserId): bool
     {

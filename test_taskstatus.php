@@ -2,7 +2,6 @@
 
 require_once "vendor/autoload.php";
 
-use TaskForce\Task\Action\TaskAction;
 use TaskForce\Task\Task;
 use TaskForce\Task\TaskStatusEnum;
 use \TaskForce\Task\Action\CancelAction;
@@ -14,14 +13,29 @@ $customer_id = 1; //заказчик
 $implementor_id = 2; //исполнитель
 
 $newTask = new Task(TaskStatusEnum::NEW(), $customer_id); //новая задача (для заказчика)
-$newTask_implementor = new Task(TaskStatusEnum::NEW(), $customer_id, $implementor_id); //новая задача (логика для исполнителя)
+$newTask_implementor = new Task(
+    TaskStatusEnum::NEW(), $customer_id, $implementor_id
+); //новая задача (логика для исполнителя)
 assert($newTask->customerId == 1, 'хранит id заказчика');
 
 $inWorkTask = new Task(TaskStatusEnum::IN_PROGRESS(), $customer_id, $implementor_id);
 assert($inWorkTask->implementorId == 2, 'хранит id исполнителя');
 
-$taskSM = $newTask->getStatefulTask($customer_id); //отслеживаем новую задачу для заказчика
-$taskSM_for_implementor = $newTask_implementor->getStatefulTask($implementor_id); //отслеживаем другую новую задачу для исполнителя
+//отслеживаем новую задачу для заказчика
+try {
+    $taskSM = $newTask->getStatefulTask($customer_id);
+} catch (\TaskForce\Task\Exceptions\TaskActionException $e) {
+    echo 'Не удалось запустить сценарий действий для указанного пользователя: ' . $e->getMessage() . PHP_EOL;
+    echo $e . PHP_EOL;
+}
+
+//отслеживаем другую новую задачу для исполнителя
+try {
+    $taskSM_for_implementor = $newTask_implementor->getStatefulTask($implementor_id);
+} catch (\TaskForce\Task\Exceptions\TaskActionException $e) {
+    echo 'Не удалось запустить сценарий действий для указанного пользователя: ' . $e->getMessage() . PHP_EOL;
+    echo $e . PHP_EOL;
+}
 
 //объявление действий
 $cancelAction = new CancelAction(TaskStatusEnum::new(), TaskStatusEnum::cancelled());
@@ -35,17 +49,31 @@ assert($taskSM->can($refuseAction, $inWorkTask, $customer_id) == false, 'про�
 
 assert($taskSM->getCurrentStatus()->label === 'Новая задача', 'возвращает текущий статус');
 
-//след. статус после отказа для заказчика
-$nextStatusAfterRefuse = $taskSM->getNextStatus($refuseAction, $inWorkTask, $customer_id);
-
-assert($nextStatusAfterRefuse?->label === null, 'возвращает следующий статус');
+//след. статус после отказа для заказчика - должен срабатывать exception
+try {
+    $nextStatusAfterRefuse = $taskSM->getNextStatus($refuseAction, $inWorkTask, $customer_id);
+    assert($nextStatusAfterRefuse->label === null, 'возвращает следующий статус');
+} catch (\TaskForce\Task\Exceptions\TaskStatusException $e) {
+    echo 'Не удалось получить след. статус: ' . $e->getMessage() . PHP_EOL;
+    echo $e . PHP_EOL;
+}
 
 //след. статус после отклика для исполнителя
-$nextStatusAfterRespond = $taskSM_for_implementor->getNextStatus($respondAction, $newTask_implementor, $implementor_id);
-assert($nextStatusAfterRespond?->label === 'Задача в работе', 'возвращает следующий статус');
+try {
+    $nextStatusAfterRespond = $taskSM_for_implementor->getNextStatus(
+        $respondAction,
+        $newTask_implementor,
+        $implementor_id
+    );
+    assert($nextStatusAfterRespond?->label === 'Задача в работе', 'возвращает следующий статус');
+} catch (\TaskForce\Task\Exceptions\TaskStatusException $e) {
+    echo 'Не удалось получить след. статус: ' . $e->getMessage() . PHP_EOL;
+    echo $e . PHP_EOL;
+}
 
-//доступные действия
+//доступные действия для заказчика
 $availableActions = $taskSM->getAvailableActions();
+//для исполнителя
 $availableActions_implementor = $taskSM_for_implementor->getAvailableActions();
 
 // проверяем по ключу массива $actions
@@ -59,4 +87,4 @@ assert($firstAvailableAction instanceof $cancelAction, 'первое возмо�
 // non-happy path
 assert(!($firstAvailableAction instanceof $refuseAction), 'первое возможное действие это НЕ отказ');
 
-echo 'Тесты пройдены' . PHP_EOL;
+echo PHP_EOL . 'Тесты пройдены' . PHP_EOL;
