@@ -3,8 +3,7 @@
 namespace TaskForce\Task\StateMachine;
 
 use TaskForce\Task\Action\TaskAction;
-use TaskForce\Task\Exceptions\TaskActionException;
-use TaskForce\Task\Exceptions\TaskStatusException;
+use TaskForce\Exceptions\TaskStatusException;
 use TaskForce\Task\Task;
 use TaskForce\Task\StatusInterface;
 use TaskForce\Task\TaskStatusEnum;

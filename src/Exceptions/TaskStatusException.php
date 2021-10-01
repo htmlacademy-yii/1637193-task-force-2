@@ -1,8 +1,7 @@
 <?php
 
-namespace TaskForce\Task\Exceptions;
+namespace TaskForce\Exceptions;
 
 class TaskStatusException extends TaskforceAppException
 {
-
 }

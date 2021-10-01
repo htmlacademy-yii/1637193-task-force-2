@@ -1,8 +1,7 @@
 <?php
 
-namespace TaskForce\Task\Exceptions;
+namespace TaskForce\Exceptions;
 
 class TaskActionException extends TaskforceAppException
 {
-
 }
