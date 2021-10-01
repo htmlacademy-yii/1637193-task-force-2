@@ -2,7 +2,7 @@
 
 namespace TaskForce\Task;
 
-use TaskForce\Task\Exceptions\TaskActionException;
+use TaskForce\Exceptions\TaskActionException;
 use TaskForce\Task\StateMachine\StateMachine;
 use TaskForce\Task\StateMachine\CustomerStateMachine;
 use TaskForce\Task\StateMachine\ImplementorStateMachine;
